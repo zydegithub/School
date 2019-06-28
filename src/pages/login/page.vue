@@ -172,7 +172,7 @@ export default {
             password: this.formLogin.password
           }).then(() => {
             // 重定向对象不存在则返回顶层路径
-           this.$layer.msg("登录成功！")
+            this.$layer.msg('登录成功！')
             this.$router.replace(this.$route.query.redirect || '/')
           })
         } else {

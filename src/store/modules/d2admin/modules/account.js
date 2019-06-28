@@ -44,7 +44,7 @@ export default {
             resolve()
           })
           .catch(err => {
-            alert("登录失败")
+            alert('登录失败')
             console.log('err: ', err)
             reject(err)
           })

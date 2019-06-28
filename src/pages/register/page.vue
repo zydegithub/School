@@ -99,36 +99,36 @@
 
 <script>
 export default {
-  name: "page3",
-  data() {
+  name: 'page3',
+  data () {
     return {
-      file: "",
-      username: "",
-      password: "",
-      truePassword: "",
-      name: "",
-      birthday: "",
-      sex: "",
-      signature: "",
+      file: '',
+      username: '',
+      password: '',
+      truePassword: '',
+      name: '',
+      birthday: '',
+      sex: '',
+      signature: '',
       loading: false,
       QiniuData: {
-        key: "", //图片名字处理
-        token: "" //七牛云token
+        key: '', // 图片名字处理
+        token: '' // 七牛云token
       },
-      domain: "https://upload-z1.qiniup.com", // 七牛云的上传地址（华北区）
-      qiniuaddr: "pthxgm509.bkt.clouddn.com", // 七牛云的图片外链地址
-      uploadPicUrl: "", //提交到后台图片地址
+      domain: 'https://upload-z1.qiniup.com', // 七牛云的上传地址（华北区）
+      qiniuaddr: 'pthxgm509.bkt.clouddn.com', // 七牛云的图片外链地址
+      uploadPicUrl: '', // 提交到后台图片地址
       fileList: []
-    };
+    }
   },
-  mounted() {
-    this.getQiniuToken();
+  mounted () {
+    this.getQiniuToken()
   },
   methods: {
-    isHave() {
+    isHave () {
       this.$http
         .post(
-          "http://47.92.153.85:8080/school_bs/user/findAllUser",
+          'http://47.92.153.85:8080/school_bs/user/findAllUser',
           {
             username: this.username
           },
@@ -136,80 +136,80 @@ export default {
         )
         .then(result => {
           // this.user=result.body
-          if (result.body != "") {
-            this.$layer.msg("该用户已存在！");
-            this.username = "";
-          }
-        });
+          if (result.body !== '') {
+            this.$layer.msg('该用户已存在！')
+            this.username = ''
+          } scrollbars
+        })
     },
-    handleRemove(file, fileList) {
-      this.uploadPicUrl = "";
+    handleRemove (file, fileList) {
+      this.uploadPicUrl = ''
     },
-    handleExceed(files, fileList) {
+    handleExceed (files, fileList) {
       this.$message.warning(
         `当前限制选择 3 张图片，如需更换，请删除上一张图片在重新选择！`
-      );
+      )
     },
-    beforeAvatarUpload(file) {
-      const isPNG = file.type === "image/png";
-      const isJPEG = file.type === "image/jpeg";
-      const isJPG = file.type === "image/jpg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+    beforeAvatarUpload (file) {
+      const isPNG = file.type === 'image/png'
+      const isJPEG = file.type === 'image/jpeg'
+      const isJPG = file.type === 'image/jpg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isPNG && !isJPEG && !isJPG) {
-        this.$message.error("上传头像图片只能是 jpg、png、jpeg 格式!");
-        return false;
+        this.$message.error('上传头像图片只能是 jpg、png、jpeg 格式!')
+        return false
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-        return false;
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+        return false
       }
-      this.QiniuData.key = `upload_pic_${file.name}`;
+      this.QiniuData.key = `upload_pic_${file.name}`
     },
-    uploadSuccess(response, file, fileList) {
-      console.log(fileList);
-      this.uploadPicUrl = `${this.qiniuaddr}/${response.key}`;
+    uploadSuccess (response, file, fileList) {
+      console.log(fileList)
+      this.uploadPicUrl = `${this.qiniuaddr}/${response.key}`
     },
-    uploadError(err, file, fileList) {
+    uploadError (err, file, fileList) {
       this.$message({
-        message: "上传出错，请重试！",
-        type: "error",
+        message: '上传出错，请重试！',
+        type: 'error',
         center: true
-      });
+      })
     },
-    beforeRemove(file, fileList) {
+    beforeRemove (file, fileList) {
       // return this.$confirm(`确定移除 ${ file.name }？`);
     },
-    //提交数据到后台
-    handleSubmit() {
+    // 提交数据到后台
+    handleSubmit () {
       if (
-        this.username == "" ||
-        this.password == "" ||
-        this.truePassword == "" ||
-        this.name == ""
+        this.username === '' ||
+        this.password === '' ||
+        this.truePassword === '' ||
+        this.name === ''
       ) {
-        this.$layer.msg("请完善信息！");
+        this.$layer.msg('请完善信息！')
       } else if (this.password !== this.truePassword) {
-        this.$layer.msg("两次密码不一致！");
+        this.$layer.msg('两次密码不一致！')
       } else {
-        var dt = new Date(this.birthday);
-        var y = dt.getFullYear();
-        var m = (dt.getMonth() + 1).toString().padStart(2, "0");
+        var dt = new Date(this.birthday)
+        var y = dt.getFullYear()
+        var m = (dt.getMonth() + 1).toString().padStart(2, '0')
         var d = dt
           .getDate()
           .toString()
-          .padStart(2, "0");
+          .padStart(2, '0')
 
-        var time = y + "-" + m + "-" + d;
+        var time = y + '-' + m + '-' + d
 
         this.$http
           .post(
-            "http://47.92.153.85:8080/school_bs/user/addUser",
+            'http://47.92.153.85:8080/school_bs/user/addUser',
             {
               username: this.username,
               password: this.password,
               nickname: this.name,
-              head: this.uploadPicUrl, //图片地址
+              head: this.uploadPicUrl, // 图片地址
               sex: this.sex,
               birthday: time,
               p_signature: this.signature
@@ -217,27 +217,27 @@ export default {
             { emulateJSON: true }
           )
           .then(result => {
-            if (result.bodyText != "") {
-              this.$layer.msg("注册成功");
+            if (result.bodyText != '') {
+              this.$layer.msg('注册成功')
             } else {
-              this.$layer.msg("注册失败");
+              this.$layer.msg('注册失败')
             }
-          });
-          this.layer.closeAll()
+          })
+        this.layer.closeAll()
       }
     },
-    //请求后台拿七牛云token
-    getQiniuToken() {
+    // 请求后台拿七牛云token
+    getQiniuToken () {
       this.$http
-        .get("http://47.92.153.85:8080/school_bs/dynamic/reToken")
+        .get('http://47.92.153.85:8080/school_bs/dynamic/reToken')
         .then(response => {
-          this.QiniuData.token = response.bodyText;
-          console.log(this.QiniuData.token);
+          this.QiniuData.token = response.bodyText
+          console.log(this.QiniuData.token)
         })
-        .catch(error => {});
+        .catch(error => { })
     }
   }
-};
+}
 </script>
 
 <style>
