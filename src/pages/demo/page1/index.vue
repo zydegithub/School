@@ -26,7 +26,7 @@
                     >
                   </div>
                   <div style="float:left">
-                    <a :name="mao(index)"></a>
+                    <a :name="mao(item.objectid)"></a>
                     <span
                       style="line-height:46px;font-size:18px;font-weight:600"
                     >{{ item.nickname }}</span>
@@ -37,7 +37,7 @@
                   </div>
                   <div
                     style="float:right;margin-top:10px;margin-right:10px"
-                    v-if="info.name==item.username"
+                    v-if="info.name==item.user"
                   >
                     <a href="#" @click="delect(item.objectid)" title="删除">
                       <img
@@ -142,7 +142,9 @@
                       </div>
                       <div style="float:left;margin-top:1px" v-if="comments.play">
                         <el-input v-model="comments.input" placeholder="回复:" style="width:860px"></el-input>
-                        <el-button @click="commentSent(item.objectid,comments.id)">发送</el-button>
+                        <el-button
+                          @click="commentSent(item.objectid,comments.id,comments.nickname)"
+                        >发送</el-button>
                       </div>
                     </div>
 
@@ -161,7 +163,7 @@
                           <div style="float:left;margin:2px 8px 2px 6px;">
                             <span
                               style="line-height:20px;font-size:14px;font-weight:500"
-                            >{{ reply.nickname }} &nbsp;&nbsp;回复&nbsp;&nbsp; {{ comments.nickname }} :</span>
+                            >{{ reply.nickname }} 回复 {{ reply.nickname_c }} : {{ reply.content }}</span>
                             <br>
                             <span
                               style="line-height:12px;font-size:8px;font-weight:400"
@@ -173,11 +175,6 @@
                               >
                             </a>
                           </div>
-                          <div style="float:left;margin-top:1px">
-                            <span
-                              style="line-height:20px;font-size:14px;font-weight:500"
-                            >{{ reply.content }}</span>
-                          </div>
                           <div style="float:right;margin-right:24px" v-if="info.name==reply.user_c">
                             <a href="#" @click="delect3(reply.id)" title="删除">
                               <img
@@ -188,7 +185,7 @@
                           </div>
                           <div style="float:left;margin-top:1px" v-if="reply.play">
                             <el-input v-model="reply.input" placeholder="回复:" style="width:826px"></el-input>
-                            <el-button @click="replySent(item.objectid,reply.cid)">发送</el-button>
+                            <el-button @click="replySent(item.objectid,reply.cid,reply.nickname)">发送</el-button>
                           </div>
                         </div>
                       </div>
@@ -226,7 +223,7 @@
               <div style="float:right">
                 <span
                   style="margin-right:16px;color:#808080;font-size:14px"
-                >{{ item.likePeople.split(",").length-2 }}</span>
+                >{{ item.likes.split(",").length-2 }}</span>
               </div>
             </div>
             <el-tag style="width:100%;height:46px;">
@@ -373,46 +370,46 @@ export default {
       date_c: "",
       content: "",
       ranking: [
-        {
-          id: 1,
-          content: "第一条动态",
-          likePeople: ",1,2,3,4,5,6,7,8,"
-        },
-        {
-          id: 2,
-          content: "第二条动态",
-          likePeople: ",1,2,3,4,5,6,"
-        },
-        {
-          id: 3,
-          content: "第三条动态",
-          likePeople: ",1,12,123,"
-        },
-        {
-          id: 3,
-          content: "第三条动态",
-          likePeople: ",1,12,123,"
-        },
-        {
-          id: 3,
-          content: "第三条动态",
-          likePeople: ",1,12,123,"
-        },
-        {
-          id: 3,
-          content: "第三条动态",
-          likePeople: ",1,12,123,"
-        },
-        {
-          id: 3,
-          content: "第三条动态",
-          likePeople: ",1,12,123,"
-        },
-        {
-          id: 3,
-          content: "第三条动态",
-          likePeople: ",1,12,123,"
-        }
+        // {
+        //   id: 1,
+        //   content: "第一条动态",
+        //   likePeople: ",1,2,3,4,5,6,7,8,"
+        // },
+        // {
+        //   id: 2,
+        //   content: "第二条动态",
+        //   likePeople: ",1,2,3,4,5,6,"
+        // },
+        // {
+        //   id: 3,
+        //   content: "第三条动态",
+        //   likePeople: ",1,12,123,"
+        // },
+        // {
+        //   id: 3,
+        //   content: "第三条动态",
+        //   likePeople: ",1,12,123,"
+        // },
+        // {
+        //   id: 3,
+        //   content: "第三条动态",
+        //   likePeople: ",1,12,123,"
+        // },
+        // {
+        //   id: 3,
+        //   content: "第三条动态",
+        //   likePeople: ",1,12,123,"
+        // },
+        // {
+        //   id: 3,
+        //   content: "第三条动态",
+        //   likePeople: ",1,12,123,"
+        // },
+        // {
+        //   id: 3,
+        //   content: "第三条动态",
+        //   likePeople: ",1,12,123,"
+        // }
       ],
       chartShow: true,
       activeTabName: "first",
@@ -528,6 +525,21 @@ export default {
         .then(result => {
           if (result.body != "") {
             this.list = result.body;
+          }
+        });
+      this.$http
+        .post(
+          "http://47.92.153.85:8080/school_bs/dynamic/hottop",
+          {
+            datestart: "2019-05-01",
+            dateend: "2019-06-27",
+            sign: "淘金手"
+          },
+          { emulateJSON: true }
+        )
+        .then(result => {
+          if (result.body != "") {
+            this.ranking = result.body;
           }
         });
     },
@@ -710,7 +722,8 @@ export default {
         }
       });
     },
-    commentSent(id, cid) {
+    commentSent(id, cid, nick) {
+      console.log(nick);
       var username = localStorage.getItem("username");
       var dt = new Date();
       var y = dt.getFullYear();
@@ -736,28 +749,32 @@ export default {
         if (item.objectid == id) {
           item.comments.some((it, i) => {
             if (it.id == cid) {
-              this.$http
-                .post(
-                  "http://47.92.153.85:8080/school_bs/comment/addComment",
-                  {
-                    objectid: id,
-                    user_d: item.user,
-                    user_c: username,
-                    content: it.input,
-                    date_c: date_c,
-                    cid: cid
-                  },
-                  { emulateJSON: true }
-                )
-                .then(result => {
-                  this.addData();
-                });
+              if (it.input != "") {
+                this.$http
+                  .post(
+                    "http://47.92.153.85:8080/school_bs/comment/addComment",
+                    {
+                      objectid: id,
+                      user_d: item.user,
+                      user_c: username,
+                      content: it.input,
+                      date_c: date_c,
+                      cid: cid,
+                      nickname_c: nick
+                    },
+                    { emulateJSON: true }
+                  )
+                  .then(result => {
+                    this.addData();
+                  });
+              }
             }
           });
         }
       });
     },
-    replySent(id, cid) {
+    replySent(id, cid, nick) {
+      console.log(nick);
       var username = localStorage.getItem("username");
       var dt = new Date();
       var y = dt.getFullYear();
@@ -792,7 +809,8 @@ export default {
                     user_c: username,
                     content: it.input,
                     date_c: date_c,
-                    cid: cid
+                    cid: cid,
+                    nickname_c: nick
                   },
                   { emulateJSON: true }
                 )
@@ -839,7 +857,7 @@ export default {
             .post(
               "http://47.92.153.85:8080/school_bs/dynamic/delDynamic",
               {
-                id: id
+                objectid: id
               },
               { emulateJSON: true }
             )
@@ -847,6 +865,7 @@ export default {
               if (result.body == true) {
                 this.$layer.msg("已删除！");
                 this.layer.closeAll();
+                this.addData();
               }
             });
         },
@@ -866,6 +885,7 @@ export default {
           _this.decomment(id);
           _this.$layer.msg("已删除！");
           _this.$layer.closeAll();
+          _this.addData();
         },
         function() {
           this.layer.closeAll();
@@ -883,6 +903,7 @@ export default {
           _this.decomment(id);
           _this.$layer.msg("已删除！");
           _this.$layer.closeAll();
+          _this.addData();
         },
         function() {
           this.layer.closeAll();
@@ -906,7 +927,6 @@ export default {
         });
     },
     mao(key) {
-      key = key + 1;
       return "mao" + key;
     },
     mao2(key) {
