@@ -4,7 +4,7 @@
       :src="current"
       frameborder="0"
       scrolling="yes"
-      style="position: absolute;width:100%;height:100%"
+      style="position: absolute;height:100%;width:100%;"
     ></iframe>
   </div>
 </template>

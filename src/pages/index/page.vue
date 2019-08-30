@@ -13,12 +13,13 @@ export default {
   data () {
     return {
       usename: '',
-      current: 'http://47.92.153.85:8080/school/school_dynamic.html?user=' + this.usename
+      current:
+        'http://47.92.153.85:8080/school/school_dynamic.html?user=' +
+        this.usename
     }
   },
   beforeCreate () {
     this.usename = localStorage.getItem('username')
-    console.log('usena222me', this.usename)
   }
 }
 </script>
